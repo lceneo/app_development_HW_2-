@@ -78,9 +78,9 @@ def add_orders(session: Session):
     session.commit()
 
 with session_factory() as session:
-    # print()
+    print()
     # add_users(session)
     # print_users(session)
     # add_addresses(session)
     # add_products(session)
-    add_orders(session)
+    # add_orders(session)
