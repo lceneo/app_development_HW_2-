@@ -6,15 +6,15 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: test_db
+      POSTGRES_DB: prod_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     networks:
-      - test_db
+      - prod_db
     ports:
       - "5432:5432"
 volumes:
   postgres_data:
 
 networks:
-  test_db:
+  prod_db:

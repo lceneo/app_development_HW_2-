@@ -10,7 +10,7 @@ from app.API.modules.user_module.user_controller import UserController
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
 
-DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql+asyncpg://postgres:postgres@localhost:5432/test_db')
+DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql+asyncpg://postgres:postgres@localhost:5432/prod_db')
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 async_session_factory = sessionmaker(

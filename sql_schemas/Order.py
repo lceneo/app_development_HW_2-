@@ -13,8 +13,7 @@ class Order(Base):
     )
     user_id: Mapped[UUID] = mapped_column(ForeignKey('users.id'), nullable=False)
     address_id: Mapped[UUID] = mapped_column(ForeignKey('addresses.id'), nullable=False)
-    product_id: Mapped[UUID] = mapped_column(ForeignKey('products.id'), nullable=False)
 
     user = relationship("User")
     address = relationship("Address")
-    product = relationship("Product")
+    products = relationship("Product", secondary="order_products")
