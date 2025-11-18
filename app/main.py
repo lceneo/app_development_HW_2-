@@ -6,8 +6,13 @@ from sqlalchemy.ext.asyncio.engine import create_async_engine
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm.session import sessionmaker
 
+from app.API.modules.order_module.order_controller import OrderController
+from app.API.modules.product_module.product_controller import ProductController
 from app.API.modules.user_module.user_controller import UserController
+from app.repositories import OrderRepository, ProductRepository
 from app.repositories.user_repository import UserRepository
+from app.services.order_service import OrderService
+from app.services.product_service import ProductService
 from app.services.user_service import UserService
 
 DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql+asyncpg://postgres:postgres@localhost:5432/prod_db')
@@ -30,14 +35,39 @@ async def provide_user_repository(db_session: AsyncSession) -> UserRepository:
 async def provide_user_service(user_repository: UserRepository) -> UserService:
     return UserService(user_repository)
 
+async def provide_order_repository(db_session: AsyncSession) -> OrderRepository:
+    return OrderRepository(db_session)
+
+async def provide_order_service(order_repository: OrderRepository) -> OrderService:
+    return OrderService(order_repository)
+
+async def provide_product_repository(db_session: AsyncSession) -> ProductRepository:
+    return ProductRepository(db_session)
+
+async def provide_product_service(product_repository: ProductRepository) -> ProductService:
+    return ProductService(product_repository)
+
 app = Litestar(
-    route_handlers=[UserController],
+    route_handlers=[UserController, OrderController, ProductController],
     dependencies={
         "db_session": Provide(provide_db_session),
         "user_repository": Provide(provide_user_repository),
         "user_service": Provide(provide_user_service),
+        "order_repository": Provide(provide_order_repository),
+        "order_service": Provide(provide_order_service),
+        "product_repository": Provide(provide_product_repository),
+        "product_service": Provide(provide_product_service),
     },
+    debug=True
 )
+
+def start():
+    import uvicorn
+    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+
+def run_tests():
+    import pytest
+    pytest.main([])
 
 if __name__ == "__main__":
     import uvicorn

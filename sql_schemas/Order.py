@@ -12,7 +12,9 @@ class Order(Base):
         default=uuid4,
     )
     user_id: Mapped[UUID] = mapped_column(ForeignKey('users.id'), nullable=False)
-    address_id: Mapped[UUID] = mapped_column(ForeignKey('addresses.id'), nullable=False)
+    address_id: Mapped[UUID] = mapped_column(ForeignKey('addresses.id'), nullable=True)
+    total_amount: Mapped[float] = mapped_column(nullable=False)
+    status: Mapped[str] = mapped_column(nullable=False, default='pending')
 
     user = relationship("User")
     address = relationship("Address")

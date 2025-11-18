@@ -39,6 +39,8 @@ class UserRepository:
     async def create(self, user_data: UserCreate) -> User:
         user_dict = {
             'username': user_data.username,
+            'first_name': user_data.first_name,
+            'last_name': user_data.last_name,
             'email': user_data.email,
             'description': user_data.description
         }
@@ -56,6 +58,10 @@ class UserRepository:
             user.username = user_data.username
         if user_data.email is not None:
             user.email = user_data.email
+        if user_data.first_name is not None:
+            user.first_name = user_data.first_name
+        if user_data.last_name is not None:
+            user.first_name = user_data.last_name
         if user_data.description is not None:
             user.description = user_data.description
         await self.session.commit()

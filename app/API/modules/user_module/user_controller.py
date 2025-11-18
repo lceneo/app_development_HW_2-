@@ -1,9 +1,7 @@
-from typing import List
 from uuid import UUID
 from litestar import Controller, get, put, delete, post
 from litestar.exceptions import NotFoundException
 from litestar.params import Parameter
-
 from app.API.modules.user_module.DTO.requests.user_create_request_dto import UserCreate
 from app.API.modules.user_module.DTO.responses.get_user_response_dto import UserResponse
 from app.services.user_service import UserService
@@ -11,6 +9,7 @@ from app.services.user_service import UserService
 
 class UserController(Controller):
     path = "/users"
+    tags = ["Users"]
 
     @get("/{user_id:uuid}")
     async def get_user_by_id(

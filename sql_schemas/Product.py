@@ -12,4 +12,4 @@ class Product(Base):
     )
     name: Mapped[str] = mapped_column(nullable=False, unique=True)
     price: Mapped[float] = mapped_column(nullable=False)
-    quantity: Mapped[int] = mapped_column(nullable=False)
+    stock_quantity: Mapped[int] = mapped_column(nullable=False)
