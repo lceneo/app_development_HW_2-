@@ -10,11 +10,26 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     networks:
-      - prod_db
+      - prod_network
     ports:
       - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: litestar_app
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/prod_db
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    networks:
+      - prod_network
+
 volumes:
   postgres_data:
 
 networks:
-  prod_db:
+  prod_network:

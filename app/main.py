@@ -1,5 +1,4 @@
 import os
-
 from litestar import Litestar, get
 from litestar.di import Provide
 from sqlalchemy.ext.asyncio.engine import create_async_engine
@@ -35,11 +34,11 @@ async def provide_user_repository(db_session: AsyncSession) -> UserRepository:
 async def provide_user_service(user_repository: UserRepository) -> UserService:
     return UserService(user_repository)
 
-async def provide_order_repository(db_session: AsyncSession) -> OrderRepository:
-    return OrderRepository(db_session)
+async def provide_order_repository(db_session: AsyncSession, user_repository: UserRepository, product_repository: ProductRepository) -> OrderRepository:
+    return OrderRepository(db_session, user_repository, product_repository)
 
-async def provide_order_service(order_repository: OrderRepository) -> OrderService:
-    return OrderService(order_repository)
+async def provide_order_service(order_repository: OrderRepository, product_repository: ProductRepository,  user_repository: UserRepository) -> OrderService:
+    return OrderService(order_repository, product_repository, user_repository)
 
 async def provide_product_repository(db_session: AsyncSession) -> ProductRepository:
     return ProductRepository(db_session)
@@ -63,7 +62,7 @@ app = Litestar(
 
 def start():
     import uvicorn
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
 
 def run_tests():
     import pytest
