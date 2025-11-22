@@ -1,4 +1,5 @@
 import os
+
 from litestar import Litestar, get
 from litestar.di import Provide
 from sqlalchemy.ext.asyncio.engine import create_async_engine
@@ -14,12 +15,15 @@ from app.services.order_service import OrderService
 from app.services.product_service import ProductService
 from app.services.user_service import UserService
 
-DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql+asyncpg://postgres:postgres@localhost:5432/prod_db')
+DATABASE_URL = os.getenv(
+    "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/prod_db"
+)
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 async_session_factory = sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
 )
+
 
 async def provide_db_session() -> AsyncSession:
     async with async_session_factory() as session:
@@ -28,23 +32,40 @@ async def provide_db_session() -> AsyncSession:
         finally:
             await session.close()
 
+
 async def provide_user_repository(db_session: AsyncSession) -> UserRepository:
     return UserRepository(db_session)
+
 
 async def provide_user_service(user_repository: UserRepository) -> UserService:
     return UserService(user_repository)
 
-async def provide_order_repository(db_session: AsyncSession, user_repository: UserRepository, product_repository: ProductRepository) -> OrderRepository:
+
+async def provide_order_repository(
+    db_session: AsyncSession,
+    user_repository: UserRepository,
+    product_repository: ProductRepository,
+) -> OrderRepository:
     return OrderRepository(db_session, user_repository, product_repository)
 
-async def provide_order_service(order_repository: OrderRepository, product_repository: ProductRepository,  user_repository: UserRepository) -> OrderService:
+
+async def provide_order_service(
+    order_repository: OrderRepository,
+    product_repository: ProductRepository,
+    user_repository: UserRepository,
+) -> OrderService:
     return OrderService(order_repository, product_repository, user_repository)
+
 
 async def provide_product_repository(db_session: AsyncSession) -> ProductRepository:
     return ProductRepository(db_session)
 
-async def provide_product_service(product_repository: ProductRepository) -> ProductService:
+
+async def provide_product_service(
+    product_repository: ProductRepository,
+) -> ProductService:
     return ProductService(product_repository)
+
 
 app = Litestar(
     route_handlers=[UserController, OrderController, ProductController],
@@ -57,17 +78,23 @@ app = Litestar(
         "product_repository": Provide(provide_product_repository),
         "product_service": Provide(provide_product_service),
     },
-    debug=True
+    debug=True,
 )
+
 
 def start():
     import uvicorn
+
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+
 
 def run_tests():
     import pytest
+
     pytest.main([])
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="127.0.0.1", port=8000)

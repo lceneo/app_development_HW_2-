@@ -1,4 +1,5 @@
 from uuid import UUID
+
 from litestar.exceptions import NotFoundException
 
 from app.API.modules.user_module.DTO.requests.user_create_request_dto import UserCreate

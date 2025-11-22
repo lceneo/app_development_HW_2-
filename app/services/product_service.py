@@ -1,9 +1,14 @@
 from uuid import UUID
+
 from litestar.exceptions import NotFoundException
 
-from app.API.modules.product_module.DTO.requests.product_update_request_dto import ProductUpdate
+from app.API.modules.product_module.DTO.requests.product_create_request_dto import (
+    ProductCreate,
+)
+from app.API.modules.product_module.DTO.requests.product_update_request_dto import (
+    ProductUpdate,
+)
 from app.repositories.product_repository import ProductRepository
-from app.API.modules.product_module.DTO.requests.product_create_request_dto import ProductCreate
 from sql_schemas import Product
 
 

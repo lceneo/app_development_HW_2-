@@ -1,14 +1,25 @@
 from uuid import UUID
+
 from litestar.exceptions import NotFoundException
-from app.API.modules.order_module.DTO.requests.order_create_request_dto import OrderCreate
-from app.API.modules.order_module.DTO.requests.order_update_request_dto import OrderUpdate
+
+from app.API.modules.order_module.DTO.requests.order_create_request_dto import (
+    OrderCreate,
+)
+from app.API.modules.order_module.DTO.requests.order_update_request_dto import (
+    OrderUpdate,
+)
 from app.repositories import ProductRepository, UserRepository
 from app.repositories.order_repository import OrderRepository
 from sql_schemas import Order
 
 
 class OrderService:
-    def __init__(self, order_repository: OrderRepository, product_repository: ProductRepository, user_repository: UserRepository):
+    def __init__(
+        self,
+        order_repository: OrderRepository,
+        product_repository: ProductRepository,
+        user_repository: UserRepository,
+    ):
         self.order_repository = order_repository
 
     async def get_by_id(self, order_id: UUID) -> Order | None:

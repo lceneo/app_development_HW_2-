@@ -45,6 +45,10 @@ typing-extensions = "4.15.0"
 tzdata = "2025.2"
 uvicorn = "0.38.0"
 aiosqlite = "*"
+pre-commit = "^4.4.0"
+pylint = "^4.0.3"
+black = "^25.11.0"
+isort = "^7.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
@@ -59,6 +63,32 @@ pythonpath = ["."]
 testpaths = ["app/tests"]
 asyncio_mode = "auto"
 addopts = "--verbose --color=yes"
+
+[tool.isort]
+profile = "black"
+known_first_party = ["app"]
+skip = []
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | docker
+  | config
+  | temp
+  | migrations
+)
+'''
+
 
 [build-system]
 requires = ["poetry-core"]

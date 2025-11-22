@@ -1,10 +1,12 @@
-import pytest
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
-from app.services.order_service import OrderService
+
+import pytest
+
 from app.repositories.order_repository import OrderRepository
 from app.repositories.product_repository import ProductRepository
 from app.repositories.user_repository import UserRepository
+from app.services.order_service import OrderService
 
 
 class TestOrderService:
@@ -20,34 +22,30 @@ class TestOrderService:
 
         # Настраиваем мок user
         mock_user_repo.get_by_id.return_value = Mock(
-            id=uuid4(),
-            email="test@example.com"
+            id=uuid4(), email="test@example.com"
         )
 
         # Настраиваем мок product
         mock_product_repo.get_by_id.return_value = Mock(
-            id=uuid4(),
-            name="Test Product",
-            price=100.0,
-            stock_quantity=5
+            id=uuid4(), name="Test Product", price=100.0, stock_quantity=5
         )
 
         mock_order_repo.create.return_value = Mock(
             id=uuid4(),
             user_id=mock_user_repo.get_by_id.return_value.id,
             total_amount=200.0,
-            status="pending"
+            status="pending",
         )
 
         order_service = OrderService(
             order_repository=mock_order_repo,
             product_repository=mock_product_repo,
-            user_repository=mock_user_repo
+            user_repository=mock_user_repo,
         )
 
         order_data = {
             "user_id": str(mock_user_repo.get_by_id.return_value.id),
-            "product_ids": [str(mock_product_repo.get_by_id.return_value.id)]
+            "product_ids": [str(mock_product_repo.get_by_id.return_value.id)],
         }
 
         result = await order_service.create(order_data)

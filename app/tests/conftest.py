@@ -1,11 +1,13 @@
 import pytest
 from litestar.testing import TestClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, AsyncEngine
+from sqlalchemy import inspect, text
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+
 from sql_schemas.Base import Base
-from sqlalchemy import text, inspect
+
 from ..main import app
-from ..repositories import UserRepository, ProductRepository, OrderRepository
+from ..repositories import OrderRepository, ProductRepository, UserRepository
 
 # Тестовая база данных
 TEST_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
@@ -28,13 +30,10 @@ async def tables(engine):
 
 @pytest.fixture
 async def session(engine, tables):
-    async_session = sessionmaker(
-        engine,
-        class_=AsyncSession,
-        expire_on_commit=False
-    )
+    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with async_session() as session:
         yield session
+
 
 @pytest.fixture(autouse=True)
 async def clean_db(session: AsyncSession):
@@ -44,9 +43,11 @@ async def clean_db(session: AsyncSession):
 
     async with engine.connect() as conn:
         dialect = conn.engine.dialect.name
+
         def get_tables(sync_conn):
             inspector = inspect(sync_conn)
             return inspector.get_table_names()
+
         tables = await conn.run_sync(get_tables)
 
         if dialect == "sqlite":
@@ -56,9 +57,7 @@ async def clean_db(session: AsyncSession):
             await conn.execute(text("PRAGMA foreign_keys = ON;"))
         else:
             table_list = ", ".join(f'"{t}"' for t in tables)
-            await conn.execute(
-                text(f"TRUNCATE {table_list} RESTART IDENTITY CASCADE;")
-            )
+            await conn.execute(text(f"TRUNCATE {table_list} RESTART IDENTITY CASCADE;"))
 
         await conn.commit()
 
@@ -74,7 +73,7 @@ def product_repository(session):
 
 
 @pytest.fixture
-def order_repository(session, user_repository,product_repository):
+def order_repository(session, user_repository, product_repository):
     return OrderRepository(session, user_repository, product_repository)
 
 

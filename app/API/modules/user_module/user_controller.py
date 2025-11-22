@@ -1,7 +1,9 @@
 from uuid import UUID
-from litestar import Controller, get, put, delete, post
+
+from litestar import Controller, delete, get, post, put
 from litestar.exceptions import NotFoundException
 from litestar.params import Parameter
+
 from app.API.modules.user_module.DTO.requests.user_create_request_dto import UserCreate
 from app.API.modules.user_module.DTO.responses.get_user_response_dto import UserResponse
 from app.services.user_service import UserService
@@ -27,14 +29,17 @@ class UserController(Controller):
         self,
         user_service: UserService,
         page: int = Parameter(ge=1, default=1, description="Номер страницы"),
-        count: int = Parameter(ge=1, le=100, default=10, description="Количество записей на странице")) -> dict:
+        count: int = Parameter(
+            ge=1, le=100, default=10, description="Количество записей на странице"
+        ),
+    ) -> dict:
         users, total_count = await user_service.get_all(page=page, count=count)
         return {
             "users": [UserResponse.model_validate(user) for user in users],
             "total_count": total_count,
             "page": page,
             "count": count,
-            "total_pages": (total_count + count - 1) // count
+            "total_pages": (total_count + count - 1) // count,
         }
 
     @post()
@@ -56,10 +61,10 @@ class UserController(Controller):
 
     @put("/{user_id:uuid}")
     async def update_user(
-            self,
-            user_service: UserService,
-            user_id: UUID,
-            data: UserCreate,
+        self,
+        user_service: UserService,
+        user_id: UUID,
+        data: UserCreate,
     ) -> UserResponse:
         user = await user_service.update(user_id, data)
         return UserResponse.model_validate(user)

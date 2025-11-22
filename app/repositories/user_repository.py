@@ -1,6 +1,8 @@
 from uuid import UUID
-from sqlalchemy import select, func
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.API.modules.user_module.DTO.requests.user_create_request_dto import UserCreate
 from app.API.modules.user_module.DTO.requests.user_update_request_dto import UserUpdate
 from sql_schemas import User
@@ -11,9 +13,7 @@ class UserRepository:
         self.session = db_session
 
     async def get_by_id(self, user_id: UUID) -> User | None:
-        result = await self.session.execute(
-            select(User).where(User.id == user_id)
-        )
+        result = await self.session.execute(select(User).where(User.id == user_id))
         return result.scalar_one_or_none()
 
     async def get_all(self, page: int = 1, count: int = 10) -> tuple[list[User], int]:
@@ -22,27 +22,23 @@ class UserRepository:
 
         # Получаем пользователей для текущей страницы
         users_result = await self.session.execute(
-            select(User)
-            .offset(offset)
-            .limit(count)
+            select(User).offset(offset).limit(count)
         )
         users = users_result.scalars().all()
 
         # Получаем общее количество пользователей
-        total_count_result = await self.session.execute(
-            select(func.count(User.id))
-        )
+        total_count_result = await self.session.execute(select(func.count(User.id)))
         total_count = total_count_result.scalar_one()
 
         return users, total_count
 
     async def create(self, user_data: UserCreate) -> User:
         user_dict = {
-            'username': user_data.username,
-            'first_name': user_data.first_name,
-            'last_name': user_data.last_name,
-            'email': user_data.email,
-            'description': user_data.description
+            "username": user_data.username,
+            "first_name": user_data.first_name,
+            "last_name": user_data.last_name,
+            "email": user_data.email,
+            "description": user_data.description,
         }
         user = User(**user_dict)
         self.session.add(user)

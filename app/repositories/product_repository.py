@@ -1,9 +1,12 @@
 from uuid import uuid4
-from sqlalchemy import select, func
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.API.modules.product_module.DTO.requests.product_update_request_dto import ProductUpdate
+from app.API.modules.product_module.DTO.requests.product_update_request_dto import (
+    ProductUpdate,
+)
 from sql_schemas import Product
 
 
@@ -21,15 +24,11 @@ class ProductRepository:
         offset = (page - 1) * count
 
         products_result = await self.session.execute(
-            select(Product)
-            .offset(offset)
-            .limit(count)
+            select(Product).offset(offset).limit(count)
         )
         products = products_result.scalars().all()
 
-        total_count_result = await self.session.execute(
-            select(func.count(Product.id))
-        )
+        total_count_result = await self.session.execute(select(func.count(Product.id)))
         total_count = total_count_result.scalar_one()
 
         return products, total_count

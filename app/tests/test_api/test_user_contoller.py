@@ -1,12 +1,13 @@
 from unittest.mock import AsyncMock
-import pytest
 from uuid import uuid4
-from litestar.testing import create_test_client
-from litestar.di import Provide
 
-from app.API.modules.user_module.user_controller import UserController
-from app.API.modules.user_module.DTO.responses.get_user_response_dto import UserResponse
+import pytest
+from litestar.di import Provide
+from litestar.testing import create_test_client
+
 from app.API.modules.user_module.DTO.requests.user_create_request_dto import UserCreate
+from app.API.modules.user_module.DTO.responses.get_user_response_dto import UserResponse
+from app.API.modules.user_module.user_controller import UserController
 from app.services.user_service import UserService
 
 
@@ -33,8 +34,11 @@ def test_get_user_by_id(fake_user):
         response = client.get(f"/users/{fake_user['id']}")
 
     assert response.status_code == 200
-    assert response.json() == UserResponse.model_validate(fake_user).model_dump(mode="json")
+    assert response.json() == UserResponse.model_validate(fake_user).model_dump(
+        mode="json"
+    )
     mock_user_service.get_by_id.assert_called_once_with(fake_user["id"])
+
 
 def test_create_user(fake_user):
     mock_user_service = AsyncMock(spec=UserService)
@@ -54,12 +58,15 @@ def test_create_user(fake_user):
         response = client.post("/users", json=payload)
 
     assert response.status_code == 201
-    assert response.json() == UserResponse.model_validate(fake_user).model_dump(mode="json")
+    assert response.json() == UserResponse.model_validate(fake_user).model_dump(
+        mode="json"
+    )
 
     mock_user_service.create.assert_called_once()
     called_arg = mock_user_service.create.call_args.args[0]
     assert isinstance(called_arg, UserCreate)
     assert called_arg.email == payload["email"]
+
 
 def test_update_user(fake_user):
     mock_user_service = AsyncMock(spec=UserService)
@@ -87,6 +94,7 @@ def test_update_user(fake_user):
 
     assert called_user_id == uid
     assert called_update_dto.email == payload["email"]
+
 
 def test_delete_user(fake_user):
     mock_user_service = AsyncMock(spec=UserService)

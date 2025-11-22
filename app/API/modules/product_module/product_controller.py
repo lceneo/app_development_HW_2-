@@ -1,10 +1,18 @@
 from uuid import UUID
-from litestar import Controller, get, post, put, delete
+
+from litestar import Controller, delete, get, post, put
 from litestar.exceptions import NotFoundException
 from litestar.params import Parameter
-from app.API.modules.product_module.DTO.requests.product_create_request_dto import ProductCreate
-from app.API.modules.product_module.DTO.requests.product_update_request_dto import ProductUpdate
-from app.API.modules.product_module.DTO.responses.get_product_response_dto import ProductResponse
+
+from app.API.modules.product_module.DTO.requests.product_create_request_dto import (
+    ProductCreate,
+)
+from app.API.modules.product_module.DTO.requests.product_update_request_dto import (
+    ProductUpdate,
+)
+from app.API.modules.product_module.DTO.responses.get_product_response_dto import (
+    ProductResponse,
+)
 from app.services.product_service import ProductService
 
 

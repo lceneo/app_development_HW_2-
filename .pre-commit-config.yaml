@@ -1,0 +1,26 @@
+fail_fast: false
+
+repos:
+  - repo: local
+    hooks:
+      - id: system
+        name: Black
+        entry: poetry run black app
+        pass_filenames: false
+        language: system
+
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        entry: poetry run isort app
+        pass_filenames: false
+        language: system
+
+  - repo: local
+    hooks:
+      - id: system
+        name: pylint
+        entry: poetry run pylint app
+        pass_filenames: false
+        language: system

@@ -10,6 +10,7 @@ class OrderProductResponse(BaseModel):
     price: float
     model_config = ConfigDict(from_attributes=True)
 
+
 class OrderResponse(BaseModel):
     id: UUID
     user_id: UUID

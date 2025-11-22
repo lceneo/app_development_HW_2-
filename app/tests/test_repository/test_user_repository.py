@@ -4,6 +4,7 @@ from app.API.modules.user_module.DTO.requests.user_create_request_dto import Use
 from app.API.modules.user_module.DTO.requests.user_update_request_dto import UserUpdate
 from app.repositories.user_repository import UserRepository
 
+
 class TestUserRepository:
     @pytest.mark.asyncio
     async def test_create_user(self, user_repository: UserRepository):
@@ -35,8 +36,7 @@ class TestUserRepository:
         )
 
         updated_user = await user_repository.update(
-            user.id,
-            UserUpdate(first_name="Updated")
+            user.id, UserUpdate(first_name="Updated")
         )
 
         assert updated_user.username == "test"
@@ -87,4 +87,3 @@ class TestUserRepository:
         assert len(users_page_2) == 5
         assert users_page_2[0].email == "user10@example.com"
         assert users_page_2[-1].email == "user14@example.com"
-

@@ -1,11 +1,19 @@
 from uuid import UUID
-from litestar import Controller, get, put, delete, post
+
+from litestar import Controller, delete, get, post, put
 from litestar.exceptions import NotFoundException
 from litestar.params import Parameter
-from app.API.modules.order_module.DTO.requests.order_create_request_dto import OrderCreate
-from app.API.modules.order_module.DTO.requests.order_update_request_dto import OrderUpdate
+
+from app.API.modules.order_module.DTO.requests.order_create_request_dto import (
+    OrderCreate,
+)
+from app.API.modules.order_module.DTO.requests.order_update_request_dto import (
+    OrderUpdate,
+)
+from app.API.modules.order_module.DTO.responses.get_order_response_dto import (
+    OrderResponse,
+)
 from app.services.order_service import OrderService
-from app.API.modules.order_module.DTO.responses.get_order_response_dto import OrderResponse
 
 
 class OrderController(Controller):
@@ -28,7 +36,9 @@ class OrderController(Controller):
         self,
         order_service: OrderService,
         page: int = Parameter(ge=1, default=1, description="Номер страницы"),
-        count: int = Parameter(ge=1, le=100, default=10, description="Количество записей на странице"),
+        count: int = Parameter(
+            ge=1, le=100, default=10, description="Количество записей на странице"
+        ),
     ) -> dict:
         orders, total_count = await order_service.get_all(page=page, count=count)
         return {

@@ -1,11 +1,16 @@
 from uuid import uuid4
-from sqlalchemy import select, func, delete
+
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.API.modules.order_module.DTO.requests.order_create_request_dto import (
+    OrderCreate,
+)
+from app.API.modules.order_module.DTO.requests.order_update_request_dto import (
+    OrderUpdate,
+)
 from sql_schemas import Order, OrderProduct
-from app.API.modules.order_module.DTO.requests.order_create_request_dto import OrderCreate
-from app.API.modules.order_module.DTO.requests.order_update_request_dto import OrderUpdate
 
 
 class OrderRepository:
@@ -65,9 +70,7 @@ class OrderRepository:
         )
         orders = orders_result.scalars().all()
 
-        total_count_result = await self.session.execute(
-            select(func.count(Order.id))
-        )
+        total_count_result = await self.session.execute(select(func.count(Order.id)))
         total_count = total_count_result.scalar_one()
 
         return orders, total_count

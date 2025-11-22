@@ -1,7 +1,11 @@
 import pytest
 
-from app.API.modules.product_module.DTO.requests.product_create_request_dto import ProductCreate
-from app.API.modules.product_module.DTO.requests.product_update_request_dto import ProductUpdate
+from app.API.modules.product_module.DTO.requests.product_create_request_dto import (
+    ProductCreate,
+)
+from app.API.modules.product_module.DTO.requests.product_update_request_dto import (
+    ProductUpdate,
+)
 from app.repositories.product_repository import ProductRepository
 
 
@@ -25,19 +29,11 @@ class TestProductRepository:
     @pytest.mark.asyncio
     async def test_update_product(self, product_repository: ProductRepository):
         p = await product_repository.create(
-            ProductCreate(
-                name="Creatine",
-                price=20.0,
-                stock_quantity=50
-            )
+            ProductCreate(name="Creatine", price=20.0, stock_quantity=50)
         )
 
         updated_p = await product_repository.update(
-            p.id,
-            ProductUpdate(
-                price=25.0,
-                stock_quantity=60
-            )
+            p.id, ProductUpdate(price=25.0, stock_quantity=60)
         )
 
         assert updated_p.name == "Creatine"
@@ -47,11 +43,7 @@ class TestProductRepository:
     @pytest.mark.asyncio
     async def test_delete_product(self, product_repository: ProductRepository):
         p = await product_repository.create(
-            ProductCreate(
-                name="BCAA",
-                price=15.0,
-                stock_quantity=75
-            )
+            ProductCreate(name="BCAA", price=15.0, stock_quantity=75)
         )
 
         exists_before = await product_repository.get_by_id(p.id)
@@ -63,7 +55,9 @@ class TestProductRepository:
         assert exists_after is None
 
     @pytest.mark.asyncio
-    async def test_get_all_products_with_pagination(self, product_repository: ProductRepository):
+    async def test_get_all_products_with_pagination(
+        self, product_repository: ProductRepository
+    ):
         for i in range(15):
             await product_repository.create(
                 ProductCreate(

@@ -1,5 +1,7 @@
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict
+
 
 class ProductResponse(BaseModel):
     id: UUID
