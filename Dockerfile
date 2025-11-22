@@ -6,20 +6,15 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-# Устанавливаем Poetry
 RUN pip install --no-cache-dir poetry
 RUN poetry config virtualenvs.path --unset
 RUN poetry config virtualenvs.in-project true
 
-# Копируем только конфиги
 COPY pyproject.toml poetry.lock* ./
 
-# Устанавливаем зависимости + проект (проект ещё НЕ скопирован, но package-mode позволит)
 RUN poetry install --no-root
 
-# Теперь копируем исходники пакета
 COPY . .
-# Устанавливаем проект (теперь папка app существует)
 RUN poetry install
 
 COPY docker/entrypoint.sh /entrypoint.sh
