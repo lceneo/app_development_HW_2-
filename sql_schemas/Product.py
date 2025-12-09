@@ -13,3 +13,13 @@ class Product(Base):
     name: Mapped[str] = mapped_column(nullable=False, unique=True)
     price: Mapped[float] = mapped_column(nullable=False)
     stock_quantity: Mapped[int] = mapped_column(nullable=False)
+
+    def to_dict(self, serialize_complex_types: bool = True):
+        result = {}
+        for c in self.__table__.columns:
+            value = getattr(self, c.name)
+            if serialize_complex_types:
+                if isinstance(value, UUID):
+                    value = str(value)
+            result[c.name] = value
+        return result

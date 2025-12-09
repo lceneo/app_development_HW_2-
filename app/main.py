@@ -1,5 +1,6 @@
 import os
 
+import redis
 from litestar import Litestar, get
 from litestar.di import Provide
 from sqlalchemy.ext.asyncio.engine import create_async_engine
@@ -37,8 +38,10 @@ async def provide_user_repository(db_session: AsyncSession) -> UserRepository:
     return UserRepository(db_session)
 
 
-async def provide_user_service(user_repository: UserRepository) -> UserService:
-    return UserService(user_repository)
+async def provide_user_service(
+    redis_client: redis.Redis, user_repository: UserRepository
+) -> UserService:
+    return UserService(redis_client, user_repository)
 
 
 async def provide_order_repository(
@@ -62,9 +65,19 @@ async def provide_product_repository(db_session: AsyncSession) -> ProductReposit
 
 
 async def provide_product_service(
+    redis_client: redis.Redis,
     product_repository: ProductRepository,
 ) -> ProductService:
-    return ProductService(product_repository)
+    return ProductService(redis_client, product_repository)
+
+
+async def provide_redis_client() -> redis.Redis:
+    return redis.Redis(
+        host=os.getenv("REDIS_HOST", "localhost"),
+        port=6379,
+        db=0,
+        decode_responses=True,
+    )
 
 
 app = Litestar(
@@ -77,6 +90,7 @@ app = Litestar(
         "order_service": Provide(provide_order_service),
         "product_repository": Provide(provide_product_repository),
         "product_service": Provide(provide_product_service),
+        "redis_client": Provide(provide_redis_client),
     },
     debug=True,
 )

@@ -23,3 +23,19 @@ class User(Base):
     )
 
     addresses = relationship("Address", back_populates="user")
+
+    def to_dict(self, serialize_complex_types: bool = True):
+        result = {}
+        for c in self.__table__.columns:
+            value = getattr(self, c.name)
+
+            if serialize_complex_types:
+                if isinstance(value, UUID):
+                    value = str(value)
+                elif isinstance(value, datetime):
+                    value = value.isoformat()
+                elif hasattr(value, 'isoformat'):  # Для других типов с isoformat
+                    value = value.isoformat()
+
+            result[c.name] = value
+        return result
