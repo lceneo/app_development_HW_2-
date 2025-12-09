@@ -34,7 +34,7 @@ class User(Base):
                     value = str(value)
                 elif isinstance(value, datetime):
                     value = value.isoformat()
-                elif hasattr(value, 'isoformat'):  # Для других типов с isoformat
+                elif hasattr(value, 'isoformat'):
                     value = value.isoformat()
 
             result[c.name] = value
