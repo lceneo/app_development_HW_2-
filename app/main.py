@@ -10,13 +10,12 @@ from sqlalchemy.orm.session import sessionmaker
 from app.API.modules.order_module.order_controller import OrderController
 from app.API.modules.product_module.product_controller import ProductController
 from app.API.modules.user_module.user_controller import UserController
+from app.rabbitmq.consumer import start_consumers
 from app.repositories import OrderRepository, ProductRepository
 from app.repositories.user_repository import UserRepository
 from app.services.order_service import OrderService
 from app.services.product_service import ProductService
 from app.services.user_service import UserService
-
-from .rabbitmq.consumer import start_consumers
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/prod_db"
