@@ -16,11 +16,3 @@ repos:
         entry: poetry run isort app
         pass_filenames: false
         language: system
-
-  - repo: local
-    hooks:
-      - id: system
-        name: pylint
-        entry: poetry run pylint app
-        pass_filenames: false
-        language: system

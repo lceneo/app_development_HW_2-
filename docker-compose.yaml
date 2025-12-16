@@ -29,6 +29,16 @@ services:
       - "8000:8000"
     networks:
       - prod_network
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=local
+    volumes:
+      - rabbitmq_data:/data
+
 
   redis:
     image: redis:latest
@@ -43,6 +53,7 @@ services:
 
 volumes:
   postgres_data:
+  rabbitmq_data:
   redis-data:
 
 networks:

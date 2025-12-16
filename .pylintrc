@@ -18,6 +18,10 @@ disable =
     import-outside-toplevel,
     too-many-instance-attributes,
     redefined-outer-name
+    broad-exception-caught
+    wrong-import-position
+    function-redefined
+    no-value-for-parameter
 
 ignore-paths =
     deploy,

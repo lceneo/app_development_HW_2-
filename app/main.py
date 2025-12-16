@@ -16,6 +16,8 @@ from app.services.order_service import OrderService
 from app.services.product_service import ProductService
 from app.services.user_service import UserService
 
+from .rabbitmq.consumer import start_consumers
+
 DATABASE_URL = os.getenv(
     "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/prod_db"
 )
@@ -93,6 +95,7 @@ app = Litestar(
         "redis_client": Provide(provide_redis_client),
     },
     debug=True,
+    on_startup=[start_consumers],
 )
 
 
